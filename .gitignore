@@ -1,0 +1,11 @@
+# Dataset
+data/*
+
+# Logs
+logs/*
+
+# Pycache folders
+__pycache__
+
+# model weights
+models/*
