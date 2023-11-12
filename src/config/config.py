@@ -12,9 +12,9 @@ SAMPLES_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "samples")
 
 # Define training parameters
 DEVICE = "cpu"
-LEARNING_RATE = 5e-5
-GAMMA = 0.9
-EPOCHS = 10
+LEARNING_RATE = 5e-4
+GAMMA = 0.95
+EPOCHS = 50
 KLD_WEIGHT = 1e-3
 NAME = "FlowerVAE"
 IMG_SIZE = 64

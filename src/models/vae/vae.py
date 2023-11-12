@@ -106,7 +106,8 @@ class VAE(nn.Module):
         """
 
         # Reconstruction loss
-        recon_loss = nn.functional.binary_cross_entropy(x_recon, x)
+        recon_loss = nn.functional.mse_loss(x_recon, x, reduction="mean")
+        # recon_loss = nn.functional.binary_cross_entropy(x_recon, x, reduction="mean")
 
         # KL divergence loss
         kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
