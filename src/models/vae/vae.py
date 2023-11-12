@@ -175,7 +175,7 @@ class VAE(nn.Module):
             name (str): The name of the file to save the weights to. Default is "model_weights".
         """
 
-        torch.save(self.state_dict(), f"{path}/{name}.pt")
+        torch.save(self.state_dict(), f"{path}/{name}")
 
     def load_from(self, path, name):
         """
@@ -186,4 +186,4 @@ class VAE(nn.Module):
             name (str): The name of the file to load the weights from. Default is "model_weights".
         """
 
-        self.load_state_dict(torch.load(f"{path}/{name}.pt"))
+        self.load_state_dict(torch.load(f"{path}/{name}"))

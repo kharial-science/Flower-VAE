@@ -9,3 +9,7 @@ __pycache__
 
 # model weights
 models/*
+
+# samples generated
+samples/*
+!samples/real_samples.png

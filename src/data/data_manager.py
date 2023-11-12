@@ -79,7 +79,6 @@ class DataManager:
             [
                 # RandomRotation(degrees=90),
                 RandomHorizontalFlip(p=0.5),
-                RandomVerticalFlip(p=0.5),
                 Resize((IMG_SIZE, IMG_SIZE)),
                 ToTensor(),
             ]

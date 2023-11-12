@@ -7,14 +7,16 @@ import os
 # Define paths
 MODELS_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "models")
 LOGS_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
-DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "data")
+DATA_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "..", "data", "archive", "sunflowers"
+)
 SAMPLES_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "samples")
 
 # Define training parameters
 DEVICE = "cpu"
-LEARNING_RATE = 5e-4
+LEARNING_RATE = 1e-3
 GAMMA = 0.95
-EPOCHS = 50
+EPOCHS = 100
 KLD_WEIGHT = 1e-3
 NAME = "FlowerVAE"
 IMG_SIZE = 64
