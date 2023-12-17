@@ -3,5 +3,3 @@
 ## Données
 
 [[https://www.kaggle.com/datasets/l3llff/flowers]]
-
-##

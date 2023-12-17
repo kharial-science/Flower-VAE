@@ -24,14 +24,34 @@ class Decoder(nn.Module):
         self.fc = nn.Linear(
             latent_dim, hidden_dims[0] * (img_size // 8) * (img_size // 8)
         )
+        self.bn1 = nn.BatchNorm2d(hidden_dims[1])
         self.conv1 = nn.ConvTranspose2d(
-            hidden_dims[0], hidden_dims[1], kernel_size=4, stride=2, padding=1
+            hidden_dims[0],
+            hidden_dims[1],
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            output_padding=1,
         )
+        self.bn2 = nn.BatchNorm2d(hidden_dims[2])
         self.conv2 = nn.ConvTranspose2d(
-            hidden_dims[1], hidden_dims[2], kernel_size=4, stride=2, padding=1
+            hidden_dims[1],
+            hidden_dims[2],
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            output_padding=1,
+            # needed the output_padding to add this to reconstruct progressively
+            # the output image, if not a raw as missing
         )
+        self.bn3 = nn.BatchNorm2d(hidden_dims[3])
         self.conv3 = nn.ConvTranspose2d(
-            hidden_dims[2], hidden_dims[3], kernel_size=4, stride=2, padding=1
+            hidden_dims[2],
+            hidden_dims[3],
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            output_padding=1,
         )
         self.conv4 = nn.ConvTranspose2d(
             hidden_dims[3], channels, kernel_size=3, stride=1, padding=1
@@ -49,11 +69,11 @@ class Decoder(nn.Module):
         """
 
         x = self.fc(z)
-        x = x.view(-1, self.hidden_dims[0], 4, 4)
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv2(x))
-        x = F.relu(self.conv3(x))
-        x = torch.sigmoid(self.conv4(x))
+        x = x.view(-1, self.hidden_dims[0], self.img_size // 8, self.img_size // 8)
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
+        x = torch.tanh(self.conv4(x))  # before : sigmoid
         x = x.view(-1, 3, self.img_size, self.img_size)
 
         return x

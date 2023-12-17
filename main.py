@@ -2,6 +2,7 @@ import torch
 
 from src.models.vae.vae import VAE
 from src.logger.logger import Logger
+from src.logger.tracker import Tracker
 from src.data.data_manager import DataManager
 from src.trainer.trainer import Trainer
 from src.visualization.visualizer import Visualizer
@@ -15,11 +16,13 @@ from src.config.config import (
     EPOCHS,
     DEVICE,
     NAME,
-    GAMMA,
+    LOG_INTERVAL,
 )
 
 logger = Logger("try1").logger
 logger.info("Logger instantiated")
+tracker = Tracker(NAME)
+logger.info("Tracker instantiated")
 
 data_manager = DataManager(verbose=True)
 logger.info("Data manager instantiated")
@@ -32,10 +35,13 @@ vae = VAE(
     hidden_dims=HIDDEN_DIMS,
     logger=logger,
 )
-logger.info("VAE instantiated")
 
 optimizer = torch.optim.Adam(vae.parameters(), lr=LEARNING_RATE)
-scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=GAMMA)
+# scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=GAMMA)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer, mode="min", factor=0.5, patience=10, verbose=True
+)
+
 
 vae.set_loss_params(kld_weight=KLD_WEIGHT)
 loss_fn = vae.vae_loss
@@ -45,6 +51,7 @@ trainer = Trainer(
     optimizer=optimizer,
     loss_fn=loss_fn,
     logger=logger,
+    tracker=tracker,
 )
 logger.info("Trainer instantiated")
 
@@ -57,4 +64,5 @@ trainer.train(
     num_epochs=EPOCHS,
     verbose=True,
     visualizer=visualizer,
+    log_interval=LOG_INTERVAL,
 )

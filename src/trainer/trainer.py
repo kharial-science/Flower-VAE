@@ -4,8 +4,10 @@ Define a trainer class
 
 import torch
 
-from src.config.config import MODELS_PATH
+from src.config.config import MODELS_PATH, LOGS_PATH
 from src.visualization.visualizer import Visualizer
+from src.logger.logger import Logger
+from src.logger.tracker import Tracker
 
 
 class Trainer:
@@ -33,12 +35,21 @@ class Trainer:
         Evaluates the model on the given dataloader.
     """
 
-    def __init__(self, model, optimizer, loss_fn, scheduler=None, logger=None):
+    def __init__(
+        self,
+        model,
+        optimizer,
+        loss_fn,
+        scheduler=None,
+        logger: Logger = None,
+        tracker: Tracker = None,
+    ):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.loss_fn = loss_fn
         self.logger = logger
+        self.tracker = tracker
 
     def train_step(self, x):
         """
@@ -129,12 +140,22 @@ class Trainer:
                     train_loss,
                     val_loss,
                 )
-            self.model.save_to(MODELS_PATH, f"{self.model.name}_epoch_{epoch}.pt")
+            self.model.save_to(MODELS_PATH, f"{self.model.name}_current.pt")
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 self.model.save_to(MODELS_PATH, f"{self.model.name}_best.pt")
+                visualizer.visualize(self.model, "best_samples", num_images=64)
             if self.scheduler is not None:
                 self.scheduler.step()
+            if self.tracker is not None:
+                self.tracker.track(
+                    train_loss,
+                    loss["kl_loss"].item(),
+                    loss["recon_loss"].item(),
+                    val_loss,
+                )
+                self.tracker.save_to(LOGS_PATH)
+                self.tracker.plot(LOGS_PATH)
 
     def eval(self, dataloader):
         """

@@ -34,6 +34,8 @@ class VAE(nn.Module):
 
         self.kld_weight = None
 
+        logger.info("VAE instantiated")
+
     def encode(self, x):
         """
         Encodes the input tensor x into a latent space representation.
