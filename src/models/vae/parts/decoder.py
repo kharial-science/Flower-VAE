@@ -70,9 +70,9 @@ class Decoder(nn.Module):
 
         x = self.fc(z)
         x = x.view(-1, self.hidden_dims[0], self.img_size // 8, self.img_size // 8)
-        x = F.leaky_relu(self.bn1(self.conv1(x)))
-        x = F.leaky_relu(self.bn2(self.conv2(x)))
-        x = F.leaky_relu(self.bn3(self.conv3(x)))
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
         x = torch.tanh(self.conv4(x))  # before : sigmoid
         x = x.view(-1, 3, self.img_size, self.img_size)
 
