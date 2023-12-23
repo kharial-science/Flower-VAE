@@ -24,7 +24,7 @@ from src.config.config import (
 
 # pylint: disable=missing-function-docstring
 def main():
-    logger = Logger("try1").logger
+    logger = Logger("logs").logger
     logger.info("Logger instantiated")
     tracker = Tracker(NAME)
     logger.info("Tracker instantiated")

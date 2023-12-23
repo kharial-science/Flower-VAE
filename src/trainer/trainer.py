@@ -103,13 +103,34 @@ class Trainer:
         Returns:
             None
         """
+
+        # Define visualization parameters
         vis_num_samples = 64
-        vis_noise = torch.randn(vis_num_samples, self.model.latent_dim)
-        best_val_loss = float("inf")
+        vis_spread_large = 10
+        vis_noise_large = (
+            torch.randn(vis_num_samples, self.model.latent_dim) * vis_spread_large
+        )
+        vis_spread_small = 1
+        vis_noise_small = (
+            torch.randn(vis_num_samples, self.model.latent_dim) * vis_spread_small
+        )
+
         if visualizer is not None:
             visualizer.visualize(
-                self.model, f"{self.model.name}_init", num_images=64, noise=vis_noise
+                self.model,
+                f"{self.model.name}_large_init",
+                num_images=64,
+                noise=vis_noise_large,
             )
+            visualizer.visualize(
+                self.model,
+                f"{self.model.name}_small_init",
+                num_images=64,
+                noise=vis_noise_small,
+            )
+
+        # Run the training loop
+        best_val_loss = float("inf")
         for epoch in range(num_epochs):
             train_loss = 0.0
             val_loss = 0.0
@@ -135,9 +156,15 @@ class Trainer:
             if visualizer is not None:
                 visualizer.visualize(
                     self.model,
-                    f"{self.model.name}_epoch_{epoch}",
+                    f"{self.model.name}_large_epoch_{epoch}",
                     num_images=64,
-                    noise=vis_noise,
+                    noise=vis_noise_large,
+                )
+                visualizer.visualize(
+                    self.model,
+                    f"{self.model.name}_small_epoch_{epoch}",
+                    num_images=64,
+                    noise=vis_noise_small,
                 )
             if verbose and self.logger is not None:
                 self.logger.info(
@@ -152,10 +179,19 @@ class Trainer:
                 best_val_loss = val_loss
                 self.model.save_to(MODELS_PATH, f"{self.model.name}_best.pt")
                 visualizer.visualize(
-                    self.model, "best_samples", num_images=64, noise=vis_noise
+                    self.model,
+                    "best_samples_large",
+                    num_images=64,
+                    noise=vis_noise_large,
+                )
+                visualizer.visualize(
+                    self.model,
+                    "best_samples_small",
+                    num_images=64,
+                    noise=vis_noise_small,
                 )
             if self.scheduler is not None:
-                self.scheduler.step()
+                self.scheduler.step(val_loss)
             if self.tracker is not None:
                 self.tracker.track(
                     train_loss,

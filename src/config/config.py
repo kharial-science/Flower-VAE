@@ -4,7 +4,7 @@ Define global variables for the project.
 
 import os
 
-NAME = "FlowerVAE"
+NAME = "Sun_D512_KLD1e-5"
 
 # Define paths and create folders
 os.makedirs(
@@ -49,7 +49,7 @@ VAL_FRAC = 0.1
 BATCH_SIZE = 64
 NUM_WORKERS = 0
 SEED = 42
-LATENT_DIM = 256
+LATENT_DIM = 512
 HIDDEN_DIMS = [32, 64, 128, 256]
 LOG_INTERVAL = 7
 FC_LOGVAR_INIT = 1e-6

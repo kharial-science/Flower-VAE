@@ -62,10 +62,10 @@ class Encoder(nn.Module):
             tuple: A tuple of two tensors containing the mean and log variance of the latent space.
         """
 
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = F.relu(self.bn4(self.conv4(x)))
+        x = F.leaky_relu(self.bn1(self.conv1(x)))
+        x = F.leaky_relu(self.bn2(self.conv2(x)))
+        x = F.leaky_relu(self.bn3(self.conv3(x)))
+        x = F.leaky_relu(self.bn4(self.conv4(x)))
         x = x.view(
             -1, self.hidden_dims[3] * (self.img_size // 8) * (self.img_size // 8)
         )

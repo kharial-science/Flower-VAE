@@ -159,7 +159,7 @@ class VAE(nn.Module):
             torch.Tensor: The generated output images.
         """
 
-        if noise:
+        if noise is not None:
             z = noise.to(self.device)
         else:
             z = torch.randn(num_samples, self.latent_dim).to(self.device)
