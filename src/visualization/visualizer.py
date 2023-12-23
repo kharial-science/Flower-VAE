@@ -44,7 +44,7 @@ class Visualizer:
             samples, os.path.join(SAMPLES_PATH, name + ".png"), nrow=8, normalize=True
         )
 
-    def visualize(self, model, name, num_images=8):
+    def visualize(self, model, name, num_images=8, noise=None):
         """
         Generates sample images from the model and saves them as a grid image.
 
@@ -56,13 +56,14 @@ class Visualizer:
             The name of the file to save the generated image as.
         num_images : int, optional
             The number of images to generate, by default 8.
+        noise : torch.Tensor, optional
         """
         # Set model to evaluation mode
         model.eval()
 
         # Generate sample images from the model
         with torch.no_grad():
-            sample = model.sample(num_images)
+            sample = model.sample(num_images, noise=noise)
 
         # Save the grid as an image file
         self.save_images(name, sample)

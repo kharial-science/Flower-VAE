@@ -1,15 +1,11 @@
 # Dataset
 data/*
 
-# Logs
-logs/*
-
 # Pycache folders
 __pycache__
 
-# model weights
-models/*
+# model training data
+models_data/*
 
 # samples generated
-samples/*
 !samples/real_samples.png

@@ -146,19 +146,23 @@ class VAE(nn.Module):
             )
         return x_recon, mu, logvar
 
-    def sample(self, num_samples, verbose=False):
+    def sample(self, num_samples, noise=None, verbose=False):
         """
         Samples from the latent space and generates output images.
 
         Args:
             num_samples (int): The number of samples to generate.
             verbose (bool): Whether to log information about the sampling.
+            noise (torch.Tensor): The noise to use for sampling.
 
         Returns:
             torch.Tensor: The generated output images.
         """
 
-        z = torch.randn(num_samples, self.latent_dim).to(self.device)
+        if noise:
+            z = noise.to(self.device)
+        else:
+            z = torch.randn(num_samples, self.latent_dim).to(self.device)
         samples = self.decode(z)
         if verbose and self.logger is not None:
             self.logger.info(

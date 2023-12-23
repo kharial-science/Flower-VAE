@@ -103,9 +103,13 @@ class Trainer:
         Returns:
             None
         """
+        vis_num_samples = 64
+        vis_noise = torch.randn(vis_num_samples, self.model.latent_dim)
         best_val_loss = float("inf")
         if visualizer is not None:
-            visualizer.visualize(self.model, f"{self.model.name}_init", num_images=64)
+            visualizer.visualize(
+                self.model, f"{self.model.name}_init", num_images=64, noise=vis_noise
+            )
         for epoch in range(num_epochs):
             train_loss = 0.0
             val_loss = 0.0
@@ -130,7 +134,10 @@ class Trainer:
             val_loss = self.eval(val_dataloader)
             if visualizer is not None:
                 visualizer.visualize(
-                    self.model, f"{self.model.name}_epoch_{epoch}", num_images=64
+                    self.model,
+                    f"{self.model.name}_epoch_{epoch}",
+                    num_images=64,
+                    noise=vis_noise,
                 )
             if verbose and self.logger is not None:
                 self.logger.info(
@@ -144,7 +151,9 @@ class Trainer:
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 self.model.save_to(MODELS_PATH, f"{self.model.name}_best.pt")
-                visualizer.visualize(self.model, "best_samples", num_images=64)
+                visualizer.visualize(
+                    self.model, "best_samples", num_images=64, noise=vis_noise
+                )
             if self.scheduler is not None:
                 self.scheduler.step()
             if self.tracker is not None:
