@@ -10,11 +10,10 @@ from torchvision.transforms import (
     Compose,
     ToTensor,
     RandomHorizontalFlip,
-    RandomVerticalFlip,
     Resize,
 )
 
-from src.config.config import (
+from src.configs.gan_config import (
     VAL_FRAC,
     DATA_PATH,
     BATCH_SIZE,

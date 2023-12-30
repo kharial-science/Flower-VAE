@@ -4,15 +4,15 @@ Define a trainer class
 
 import torch
 
-from src.config.config import MODELS_PATH, LOGS_PATH
+from src.configs.vae_config import MODELS_PATH, LOGS_PATH
 from src.visualization.visualizer import Visualizer
 from src.logger.logger import Logger
-from src.logger.tracker import Tracker
+from src.logger.vae_tracker import VAETracker as Tracker
 
 
-class Trainer:
+class VAETrainer:
     """
-    A class used to train a PyTorch model.
+    A class used to train a PyTorch VAE model.
 
     Attributes
     ----------
@@ -99,9 +99,6 @@ class Trainer:
             val_dataloader (torch.utils.data.DataLoader): The dataloader to use for validation.
             num_epochs (int): The number of epochs to train the model for.
             verbose (bool): Whether to print the epoch and loss information. Defaults to True.
-
-        Returns:
-            None
         """
 
         # Define visualization parameters

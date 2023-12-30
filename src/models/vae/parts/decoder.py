@@ -18,7 +18,7 @@ class Decoder(nn.Module):
         if hidden_dims is None:
             hidden_dims = [256, 128, 64, 32]
 
-        self.hidden_dims = hidden_dims
+        self.hidden_dims = hidden_dims.copy()
         self.img_size = img_size
 
         self.fc = nn.Linear(

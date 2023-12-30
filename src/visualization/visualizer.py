@@ -7,8 +7,6 @@ import os
 import torch
 import torchvision.utils as vutils
 
-from src.config.config import SAMPLES_PATH
-
 
 class Visualizer:
     """
@@ -25,8 +23,9 @@ class Visualizer:
         Generates sample images from the model and saves them as a grid image.
     """
 
-    def __init__(self, device):
+    def __init__(self, device, samples_path):
         self.device = device
+        self.samples_path = samples_path
 
     def save_images(self, name, samples):
         """
@@ -41,7 +40,10 @@ class Visualizer:
         """
         # Save the grid as an image file
         vutils.save_image(
-            samples, os.path.join(SAMPLES_PATH, name + ".png"), nrow=8, normalize=True
+            samples,
+            os.path.join(self.samples_path, name + ".png"),
+            nrow=8,
+            normalize=True,
         )
 
     def visualize(self, model, name, num_images=8, noise=None):

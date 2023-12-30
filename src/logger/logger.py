@@ -3,7 +3,6 @@ Define the Logger class
 """
 
 import logging
-from src.config.config import LOGS_PATH
 
 
 class Logger:
@@ -14,12 +13,12 @@ class Logger:
         logger (logging.Logger): The logger object.
     """
 
-    def __init__(self, name):
+    def __init__(self, name, logs_path):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.DEBUG)
 
         # File handler
-        file_handler = logging.FileHandler(LOGS_PATH + f"/{name}.log")
+        file_handler = logging.FileHandler(logs_path + f"/{name}.log")
         file_handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

@@ -8,7 +8,7 @@ import torch
 import matplotlib.pyplot as plt
 
 
-class Tracker:
+class VAETracker:
     """
     A class for tracking the training stats.
     And displaying these stats with matplotlib, and saving the graphs.

@@ -5,7 +5,7 @@ The Encoder part of the VAE is responsible for encoding the image into a latent 
 from torch import nn
 import torch.nn.functional as F
 
-from src.config.config import FC_LOGVAR_INIT
+from src.configs.vae_config import FC_LOGVAR_INIT
 
 
 class Encoder(nn.Module):
