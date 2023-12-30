@@ -65,7 +65,7 @@ class GAN(nn.Module):
 
         return self.discriminate(self.generate(z))
 
-    def disc_loss(self, real_predictions, generated_predictions):
+    def disc_std_loss(self, real_predictions, generated_predictions):
         """
         Computes the GAN loss.
 
@@ -85,7 +85,7 @@ class GAN(nn.Module):
         )
         return real_loss + generated_loss
 
-    def gen_loss(self, generated_predictions):
+    def gen_std_loss(self, generated_predictions):
         """
         Computes the generator loss.
 
@@ -99,6 +99,35 @@ class GAN(nn.Module):
         return F.binary_cross_entropy_with_logits(
             generated_predictions, torch.ones_like(generated_predictions)
         )
+
+    def disc_wgan_loss(self, real_predictions, generated_predictions):
+        """
+        Computes the GAN loss.
+
+        Args:
+            real_predictions (torch.Tensor): Discriminator's predictions for real images.
+            generated_predictions (torch.Tensor): Discriminator's predictions for generated images.
+
+        Returns:
+            torch.Tensor: GAN loss.
+        """
+
+        real_loss = real_predictions.mean()
+        generated_loss = generated_predictions.mean()
+        return -real_loss + generated_loss
+
+    def gen_wgan_loss(self, generated_predictions):
+        """
+        Computes the generator loss.
+
+        Args:
+            generated_predictions (torch.Tensor): Discriminator's predictions for generated images.
+
+        Returns:
+            torch.Tensor: Generator loss.
+        """
+
+        return -generated_predictions.mean()
 
     def sample(self, num_samples, noise=None, verbose=False):
         """
@@ -146,3 +175,14 @@ class GAN(nn.Module):
         """
 
         torch.save(self.state_dict(), f"{path}/{name}")
+
+    def load_from(self, path, name):
+        """
+        Loads the model weights from a file.
+
+        Args:
+            path (str): The path to load the weights from.
+            name (str): The name of the file to load the weights from. Default is "model_weights".
+        """
+
+        self.load_state_dict(torch.load(f"{path}/{name}"))

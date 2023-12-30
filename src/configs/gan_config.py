@@ -4,7 +4,7 @@ Define global variables for the GAN
 
 import os
 
-NAME = "SunGAN_D512"
+NAME = "SunWGAN_D512"
 
 # Define paths and create folders
 os.makedirs(
@@ -43,7 +43,7 @@ LEARNING_RATE = 1e-4
 EPOCHS = 500
 IMG_SIZE = 128
 CHANNELS = 3
-VAL_FRAC = 0.1
+VAL_FRAC = 0
 BATCH_SIZE = 64
 NUM_WORKERS = 0
 SEED = 42

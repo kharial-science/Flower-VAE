@@ -1,4 +1,6 @@
 """Train GAN model."""
+import os
+
 import torch
 
 from src.models.gan.gan import GAN
@@ -44,16 +46,25 @@ def main():
     )
 
     # Load the vae decoder weights
-    vae = VAE(
-        name=vae_config.NAME,
-        channels=vae_config.CHANNELS,
-        latent_dim=vae_config.LATENT_DIM,
-        img_size=vae_config.IMG_SIZE,
-        hidden_dims=vae_config.HIDDEN_DIMS,
-        logger=logger,
+    # vae = VAE(
+    #     name=vae_config.NAME,
+    #     channels=vae_config.CHANNELS,
+    #     latent_dim=vae_config.LATENT_DIM,
+    #     img_size=vae_config.IMG_SIZE,
+    #     hidden_dims=vae_config.HIDDEN_DIMS,
+    #     logger=logger,
+    # )
+    # vae.load_from(path=vae_config.MODELS_PATH, name=f"{vae_config.NAME}_best.pt")
+    # gan.init_generator(vae.decoder)
+    gan.load_from(
+        path=os.path.join(
+            os.path.dirname(__file__),
+            "models_data",
+            "SunGAN_D512",
+            "models",
+        ),
+        name="SunGAN_D512_current.pt",
     )
-    vae.load_from(path=vae_config.MODELS_PATH, name=f"{vae_config.NAME}_best.pt")
-    gan.init_generator(vae.decoder)
 
     disc_optimizer = torch.optim.Adam(gan.discriminator.parameters(), lr=LEARNING_RATE)
     gen_optimizer = torch.optim.Adam(gan.generator.parameters(), lr=LEARNING_RATE)
@@ -65,9 +76,11 @@ def main():
         model=gan,
         disc_optimizer=disc_optimizer,
         gen_optimizer=gen_optimizer,
-        disc_loss=gan.disc_loss,
-        gen_loss=gan.gen_loss,
+        disc_loss_fn=gan.disc_wgan_loss,
+        gen_loss_fn=gan.gen_wgan_loss,
         # scheduler=scheduler,
+        is_wgan=True,
+        disc_weight_clipping=0.01,
         logger=logger,
         tracker=tracker,
     )
@@ -78,10 +91,10 @@ def main():
 
     for param in vars(gan_config):
         logger.info("%s: %s", param, getattr(gan_config, param))
-    logger.info("%s: %s", "disc loss", gan.disc_loss)
-    logger.info("%s: %s", "gen loss", gan.gen_loss)
-    logger.info("%s: %s", "disc optimizer", disc_optimizer)
-    logger.info("%s: %s", "gen optimizer", gen_optimizer)
+    logger.info("WGAN: %s", trainer.is_wgan)
+    logger.info("Discriminator Weight Clipping: %s", trainer.disc_weight_clipping)
+    logger.info("%s: %s", "Discriminator Optimizer", disc_optimizer)
+    logger.info("%s: %s", "Genenrator Optimizer", gen_optimizer)
 
     trainer.train(
         train_dataloader=data_manager.train_dataloader,

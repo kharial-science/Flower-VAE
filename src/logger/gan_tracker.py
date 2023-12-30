@@ -14,10 +14,8 @@ class GANTracker:
         self.name = name
         self.disc_losses = []
         self.gen_losses = []
-        self.disc_val_losses = []
-        self.gen_val_losses = []
 
-    def track(self, loss, val_loss):
+    def track(self, loss):
         """
         Track the training stats.
 
@@ -27,8 +25,6 @@ class GANTracker:
         """
         self.disc_losses.append(loss[0])
         self.gen_losses.append(loss[1])
-        self.disc_val_losses.append(val_loss[0])
-        self.gen_val_losses.append(val_loss[1])
 
     def save_to(self, path):
         """
@@ -40,7 +36,6 @@ class GANTracker:
         file_path = os.path.join(path, f"{self.name}.pt")
         data = {
             "losses": (self.disc_losses, self.gen_losses),
-            "val_losses": (self.disc_val_losses, self.gen_val_losses),
         }
         torch.save(data, file_path)
 
@@ -54,7 +49,6 @@ class GANTracker:
         file_path = os.path.join(path, f"{self.name}.pt")
         data = torch.load(file_path)
         self.disc_losses, self.gen_losses = data["losses"]
-        self.disc_val_losses, self.gen_val_losses = data["val_losses"]
 
     def plot(self, path):
         """
@@ -68,8 +62,6 @@ class GANTracker:
         fig, ax = plt.subplots(figsize=(12, 8))
         ax.plot(self.gen_losses, label="generator_loss")
         ax.plot(self.disc_losses, label="discriminator_loss")
-        ax.plot(self.gen_val_losses, label="generator_val_loss")
-        ax.plot(self.disc_val_losses, label="discriminator_val_loss")
         ax.set_xlabel("Epoch")
         ax.set_ylabel("Loss")
         ax.set_title("GAN Training Loss")
